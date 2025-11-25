@@ -1,0 +1,44 @@
+name: API Monitoring
+
+on:
+  schedule:
+    - cron: "0 * * * *" # runs every hour
+  workflow_dispatch: # allow manual run
+
+jobs:
+  run-api-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+
+      - name: Install Newman
+        run: npm install -g newman
+
+      - name: Run Postman Tests
+        run: newman run monitoring_collection.json --reporters cli,json --reporter-json-export results.json
+
+      - name: Upload Results
+        uses: actions/upload-artifact@v3
+        with:
+          name: monitoring-results
+          path: results.json
+
+      - name: Send Email on Failure
+        if: failure()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 587
+          username: ${{ secrets.EMAIL_USER }}
+          password: ${{ secrets.EMAIL_PASS }}
+          subject: "API Monitoring Failed"
+          to: "nishamehraa1@gmail.com"
+          from: "API Monitor"
+          body: "One or more API tests failed. Check GitHub Actions logs."
