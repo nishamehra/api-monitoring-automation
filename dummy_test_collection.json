@@ -10,7 +10,7 @@
       "request": {
         "method": "GET",
         "header": [],
-        "url": "https://jsonplaceholder.typicode.com/postsss"
+        "url": "httpsx://jsonplaceholder.typicode.com/posts"
       }
     },
     {
