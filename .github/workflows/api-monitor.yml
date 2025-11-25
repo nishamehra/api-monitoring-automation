@@ -25,10 +25,10 @@ jobs:
         run: newman run monitoring_collection.json --reporters cli,json --reporter-json-export results.json
 
       - name: Upload Results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: monitoring-results
-          path: results.json
+          path: ./results.json
 
       - name: Send Email on Failure
         if: failure()
